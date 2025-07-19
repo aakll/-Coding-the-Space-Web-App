@@ -6,24 +6,56 @@ export default function App() {
 
   const handleFileUpload = (e) => {
     const file = e.target.files?.[0];
-    if (file && file.name.endsWith('.csv')) {
-      setFileName(file.name);
-      setUploadStatus('File selected. Click "Apply" to process.');
-    } else {
-      setFileName('');
-      setUploadStatus('Please upload a valid .csv file.');
+    
+    // Clear previous state
+    setFileName('');
+    setUploadStatus('');
+    
+    if (!file) {
+      setUploadStatus('No file selected.');
+      return;
     }
+    
+    // Validate file type
+    if (!file.name.toLowerCase().endsWith('.csv')) {
+      setUploadStatus('Error: Please upload a valid .csv file.');
+      return;
+    }
+    
+    // Validate file size (max 10MB)
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      setUploadStatus('Error: File size exceeds 10MB limit.');
+      return;
+    }
+    
+    // Validate file has content
+    if (file.size === 0) {
+      setUploadStatus('Error: File is empty.');
+      return;
+    }
+    
+    setFileName(file.name);
+    setUploadStatus('File selected successfully. Click "Apply" to process.');
   };
 
   const handleSubmit = () => {
     if (!fileName) {
-      setUploadStatus('Please select a .csv file before applying.');
+      setUploadStatus('Error: Please select a .csv file before applying.');
       return;
     }
+    
     setUploadStatus('Processing your file...');
+    
+    // Simulate real processing with proper error handling
     setTimeout(() => {
-      setUploadStatus('Prediction complete! View results below.');
-    }, 2000);
+      // In a real application, this would be replaced with actual API call
+      try {
+        setUploadStatus('Processing complete! Note: This is a demo - actual prediction model not connected.');
+      } catch (error) {
+        setUploadStatus('Error: Failed to process file. Please try again.');
+      }
+    }, 3000); // More realistic processing time
   };
 
   const floatingObjects = ['🚀', '🪐', '🌕', '🛰️', '🌠', '🌍', '🌌', '🔭'];
@@ -33,37 +65,37 @@ export default function App() {
       name: 'Ali Kawar',
       role: 'Web Developer',
       bio: 'Designing and developing the user-facing web application for model interaction.',
-      linkedin: 'https://www.linkedin.com/in/alikawar/ ',
+      linkedin: 'https://www.linkedin.com/in/alikawar/',
     },
     {
       name: 'Hanin Khalil',
       role: 'Data Scientist',
       bio: 'Analyzing datasets and building predictive models to detect hazardous space objects.',
-      linkedin: 'https://www.linkedin.com/in/hanine-khalil-62a7962b8/ ',
+      linkedin: 'https://www.linkedin.com/in/hanine-khalil-62a7962b8/',
     },
     {
       name: 'Samira Jewish',
       role: 'Machine Learning Engineer',
       bio: 'Training and optimizing classification models for accurate hazard detection.',
-      linkedin: 'https://www.linkedin.com/in/samira-jawish-366a422b2/ ',
+      linkedin: 'https://www.linkedin.com/in/samira-jawish-366a422b2/',
     },
     {
       name: 'Jinan Rachid',
       role: 'UI/UX Designer',
       bio: 'Designing clean and intuitive interfaces for the web application.',
-      linkedin: 'https://www.linkedin.com/in/jinan-rachid/ ',
+      linkedin: 'https://www.linkedin.com/in/jinan-rachid/',
     },
     {
       name: 'Aya Rayed',
       role: 'Frontend Developer',
       bio: 'Implementing responsive and interactive frontend components for the application.',
-      linkedin: 'https://www.linkedin.com/in/aya-rayed-01284a2a8/ ',
+      linkedin: 'https://www.linkedin.com/in/aya-rayed-01284a2a8/',
     },
     {
       name: 'Batoul Hamieh',
       role: 'Project Manager',
       bio: 'Coordinating development and ensuring smooth integration of all components.',
-      linkedin: 'https://www.linkedin.com/in/batoul-hamieh/ ',
+      linkedin: 'https://www.linkedin.com/in/batoul-hamieh/',
     },
   ];
 
@@ -100,12 +132,15 @@ export default function App() {
           ))}
         </div>
 
-        {/* Background Image */}
-        <div className="absolute inset-0 z-0">
+        {/* Background Image with fallback */}
+        <div className="absolute inset-0 z-0 bg-gradient-to-b from-gray-900 via-blue-900 to-black">
           <img
-            src="https://live.staticflickr.com/65535/49738502258_3d134eff21.jpg "
+            src="https://live.staticflickr.com/65535/49738502258_3d134eff21.jpg"
             alt="Space background"
             className="w-full h-full object-cover opacity-30"
+            onError={(e) => {
+              e.target.style.display = 'none';
+            }}
           />
         </div>
 
@@ -168,14 +203,12 @@ export default function App() {
           <p className="text-lg leading-relaxed text-gray-300 mb-6">
             Explore the source code for both the machine learning model and the web application on our GitHub repository.
           </p>
-          <a
-            href="https://github.com/your-repo "
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block bg-gradient-to-r from-green-500 to-teal-500 px-6 py-3 rounded-md font-semibold hover:from-green-600 hover:to-teal-600 transform hover:scale-105 transition-all duration-300"
+          <button
+            onClick={() => alert('GitHub repository link will be available soon!')}
+            className="inline-block bg-gradient-to-r from-green-500 to-teal-500 px-6 py-3 rounded-md font-semibold hover:from-green-600 hover:to-teal-600 transform hover:scale-105 transition-all duration-300 cursor-pointer border-none"
           >
             View on GitHub
-          </a>
+          </button>
         </div>
       </section>
 
@@ -187,13 +220,12 @@ export default function App() {
             Here you can find the full presentation of our project, including methodology, model performance,
             and future improvements.
           </p>
-          <a
-            href="/path-to-presentation.pdf"
-            download
-            className="inline-block bg-gradient-to-r from-purple-500 to-indigo-500 px-6 py-3 rounded-md font-semibold hover:from-purple-600 hover:to-indigo-600 transform hover:scale-105 transition-all duration-300"
+          <button
+            onClick={() => alert('Presentation download will be available soon!')}
+            className="inline-block bg-gradient-to-r from-purple-500 to-indigo-500 px-6 py-3 rounded-md font-semibold hover:from-purple-600 hover:to-indigo-600 transform hover:scale-105 transition-all duration-300 cursor-pointer border-none"
           >
             Download Presentation
-          </a>
+          </button>
         </div>
       </section>
 

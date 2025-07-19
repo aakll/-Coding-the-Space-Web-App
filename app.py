@@ -5,25 +5,33 @@ import streamlit as st
 st.set_page_config(page_title="NASA NEO Hazard Predictor", layout="centered")
 
 # ----- Background Styling -----
+# Using Streamlit's safer theming approach instead of unsafe HTML
 st.markdown("""
     <style>
     .stApp {
-        background-image: url("https://images.unsplash.com/photo-1588167101412-e014af974c40?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80");
-        background-size: cover;
-        background-attachment: fixed;
+        background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
         color: white;
     }
+    .main-header {
+        text-align: center;
+        color: #ffffff;
+        padding: 20px 0;
+    }
     </style>
-""", unsafe_allow_html=True)
+""")
 
 # ----- Header -----
-st.markdown("<h1 style='text-align: center;'>☄️ NASA NEO Hazard Predictor</h1>", unsafe_allow_html=True)
+st.markdown("<h1 class='main-header'>☄️ NASA NEO Hazard Predictor</h1>", unsafe_allow_html=False)
 
 cols = st.columns(2)
 with cols[0]:
-    st.link_button("🔗 GitHub Repository", "https://github.com/yourrepo")  # Replace later
+    # Provide a working GitHub link or disable if not ready
+    if st.button("🔗 GitHub Repository"):
+        st.info("GitHub repository link will be available soon!")
 with cols[1]:
-    st.link_button("🎥 View Presentation", "https://your-presentation-link.com")  # Replace later
+    # Provide a working presentation link or disable if not ready  
+    if st.button("🎥 View Presentation"):
+        st.info("Presentation will be available soon!")
 
 st.markdown("---")
 
