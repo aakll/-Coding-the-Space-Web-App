@@ -1,15 +1,18 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import joblib
 import pandas as pd
-from flask_cors import CORS
+import os
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app)
 
-# Load the model
+# Load model
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "best_rf_model.pkl")
+
 try:
-    model = joblib.load("best_rf_model.pkl")
-    print(f"✅ Model loaded successfully from best_rf_model.pkl")
+    model = joblib.load(MODEL_PATH)
+    print(f"✅ Model loaded successfully from {MODEL_PATH}")
     print(f"Model type: {type(model)}")
 except Exception as e:
     print(f"❌ Error loading model: {e}")
@@ -18,14 +21,10 @@ except Exception as e:
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        # Get data from request
         data = request.json['processedData']
-        
-        # Convert to DataFrame
         df = pd.DataFrame(data)
         
-        # Define required features for the model
-        required_features = [
+        features = [
             "Minimum Orbit Intersection",
             "Absolute Magnitude",
             "Avg_Diameter_KM",
@@ -34,13 +33,13 @@ def predict():
             "Inclination"
         ]
         
-        # Make prediction
-        predictions = model.predict(df[required_features]).tolist()
-        
+        predictions = model.predict(df[features]).tolist()
         return jsonify({'predictions': predictions})
     
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+# Render requires dynamic port binding
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
