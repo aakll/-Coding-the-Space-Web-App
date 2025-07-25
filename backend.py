@@ -16,6 +16,15 @@ import io
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
+@app.route('/')
+@app.route('/api')
+def health_check():
+    return jsonify({'status': 'healthy', 'message': 'Space Hazard Predictor API is running'})
+
+@app.route('/api/health')
+def health():
+    return jsonify({'status': 'healthy'})
+
 # Load the model once when the backend starts
 try:
     model = joblib.load("final_rf_model.joblib")
@@ -66,6 +75,7 @@ def validate_input_data(csv_string):
     return df[final_columns]
 
 @app.route('/predict', methods=['POST'])
+@app.route('/api/predict', methods=['POST'])
 def predict():
     try:
         # Handle incoming request data
@@ -112,4 +122,7 @@ def predict():
         return jsonify({'error': str(e)}), 400
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    import os
+    port = int(os.environ.get('PORT', 5000))
+    debug = os.environ.get('FLASK_ENV') != 'production'
+    app.run(host='0.0.0.0', port=port, debug=debug)
