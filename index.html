@@ -64,7 +64,12 @@
         setUploadStatus('Sending file to server for validation and prediction...');
         
         // Send the complete file to backend
-        fetch('http://localhost:5000/predict', {
+        // Use current origin for production, localhost for development
+        const apiUrl = window.location.hostname === 'localhost' 
+          ? 'http://localhost:5000/predict' 
+          : '/api/predict';
+        
+        fetch(apiUrl, {
           method: 'POST',
           body: formData
         })
